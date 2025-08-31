@@ -63,6 +63,14 @@ uvicorn api.main:app --reload
 - Swagger UI: http://127.0.0.1:8000/docs
 - Redoc: http://127.0.0.1:8000/redoc
 
+## Status do CI
+
+[![CI](https://github.com/matheussiqueirahub/nucleo-comercial-dados/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/matheussiqueirahub/nucleo-comercial-dados/actions/workflows/ci.yml)
+
+## Changelog
+
+Veja o histórico em `CHANGELOG.md` ou em Releases: https://github.com/matheussiqueirahub/nucleo-comercial-dados/releases/latest
+
 ### Endpoints principais
 - `GET /produtos` | `POST /produtos`
 - `GET /vendas` | `POST /vendas`

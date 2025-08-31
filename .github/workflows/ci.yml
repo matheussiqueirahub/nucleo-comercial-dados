@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  lint-and-smoke:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [ '3.10', '3.11', '3.12', '3.13' ]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          pip install ruff black httpx
+      - name: Ruff (lint)
+        run: ruff check .
+      - name: Black (format check)
+        run: black --check .
+      - name: Smoke test (serviços e API)
+        run: |
+          python - <<'PY'
+          from infra.forja_persistencia import ForjaDePersistencia
+          from services.servicos import OrquestradorDeFluxoComercial
+          from services import relatorios as rel
+          from api.main import app
+          
+          # Banco local (cria data/)
+          f = ForjaDePersistencia()
+          f.criar_esquema()
+          conn = f.conectar()
+          try:
+              svc = OrquestradorDeFluxoComercial(conn)
+              prods = svc.listar_produtos()
+              if not prods:
+                  p = svc.cadastrar_produto('CI Produto', 'Smoke', 3, 10.0)
+                  svc.registrar_venda(p.id, 1)
+              receita = rel.receita_total(conn)
+              assert receita >= 10.0, receita
+          finally:
+              conn.close()
+          
+          # API via TestClient
+          from fastapi.testclient import TestClient
+          c = TestClient(app)
+          r = c.get('/produtos')
+          assert r.status_code == 200, r.text
+          PY
+

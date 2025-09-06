@@ -17,7 +17,9 @@ def _intervalo_sql(start: Optional[str], end: Optional[str]) -> Tuple[str, list]
     return where, params
 
 
-def receita_total(conn: sqlite3.Connection, *, start: Optional[str] = None, end: Optional[str] = None) -> float:
+def receita_total(
+    conn: sqlite3.Connection, *, start: Optional[str] = None, end: Optional[str] = None
+) -> float:
     where, params = _intervalo_sql(start, end)
     q = f"""
         SELECT SUM(v.quantidade * COALESCE(v.preco_unitario, p.preco)) AS receita
@@ -29,7 +31,9 @@ def receita_total(conn: sqlite3.Connection, *, start: Optional[str] = None, end:
     return float(row[0]) if row and row[0] is not None else 0.0
 
 
-def receita_por_dia(conn: sqlite3.Connection, *, start: Optional[str] = None, end: Optional[str] = None) -> List[Dict[str, Any]]:
+def receita_por_dia(
+    conn: sqlite3.Connection, *, start: Optional[str] = None, end: Optional[str] = None
+) -> List[Dict[str, Any]]:
     where, params = _intervalo_sql(start, end)
     q = f"""
         SELECT DATE(v.data_venda) AS dia,
@@ -41,7 +45,10 @@ def receita_por_dia(conn: sqlite3.Connection, *, start: Optional[str] = None, en
         ORDER BY dia ASC
     """
     return [
-        {"dia": r["dia"], "receita": float(r["receita"]) if r["receita"] is not None else 0.0}
+        {
+            "dia": r["dia"],
+            "receita": float(r["receita"]) if r["receita"] is not None else 0.0,
+        }
         for r in conn.execute(q, params).fetchall()
     ]
 
@@ -70,7 +77,9 @@ def ranking_produtos(
         {
             "produto_id": int(r["produto_id"]),
             "nome": r["nome"],
-            "total_vendido": int(r["total_vendido"]) if r["total_vendido"] is not None else 0,
+            "total_vendido": (
+                int(r["total_vendido"]) if r["total_vendido"] is not None else 0
+            ),
             "receita": float(r["receita"]) if r["receita"] is not None else 0.0,
         }
         for r in conn.execute(q, params_l).fetchall()
@@ -112,8 +121,9 @@ def giro_estoque(conn: sqlite3.Connection, *, dias: int = 30) -> List[Dict[str, 
                 "estoque_atual": estoque,
                 "total_vendido_periodo": int(r["total_vendido_periodo"]),
                 "media_diaria_vendida": round(media, 4),
-                "cobertura_dias": round(cobertura, 2) if cobertura is not None else None,
+                "cobertura_dias": (
+                    round(cobertura, 2) if cobertura is not None else None
+                ),
             }
         )
     return resultado
-

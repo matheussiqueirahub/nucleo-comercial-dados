@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Optional
 
 from fastapi import Depends, FastAPI, HTTPException
-from pydantic import BaseModel, Field, PositiveInt, validator
+from pydantic import BaseModel, Field, PositiveInt
 
 from infra.forja_persistencia import ForjaDePersistencia
 from services.servicos import OrquestradorDeFluxoComercial
@@ -69,7 +69,9 @@ def listar_produtos(svc: OrquestradorDeFluxoComercial = Depends(get_service)):
 
 
 @app.post("/produtos", response_model=ProdutoOut, status_code=201)
-def criar_produto(payload: ProdutoIn, svc: OrquestradorDeFluxoComercial = Depends(get_service)):
+def criar_produto(
+    payload: ProdutoIn, svc: OrquestradorDeFluxoComercial = Depends(get_service)
+):
     prod = svc.cadastrar_produto(
         nome=payload.nome,
         descricao=payload.descricao,
@@ -100,7 +102,9 @@ def listar_vendas(svc: OrquestradorDeFluxoComercial = Depends(get_service)):
 
 
 @app.post("/vendas", response_model=VendaOut, status_code=201)
-def criar_venda(payload: VendaIn, svc: OrquestradorDeFluxoComercial = Depends(get_service)):
+def criar_venda(
+    payload: VendaIn, svc: OrquestradorDeFluxoComercial = Depends(get_service)
+):
     try:
         v = svc.registrar_venda(payload.produto_id, payload.quantidade)
         return {
@@ -118,21 +122,29 @@ class ReceitaTotalOut(BaseModel):
 
 
 @app.get("/relatorios/receita", response_model=ReceitaTotalOut)
-def rel_receita_total(start: Optional[str] = None, end: Optional[str] = None, conn=Depends(get_conn)):
+def rel_receita_total(
+    start: Optional[str] = None, end: Optional[str] = None, conn=Depends(get_conn)
+):
     return {"receita": rel.receita_total(conn, start=start, end=end)}
 
 
 @app.get("/relatorios/receita_por_dia")
-def rel_receita_por_dia(start: Optional[str] = None, end: Optional[str] = None, conn=Depends(get_conn)):
+def rel_receita_por_dia(
+    start: Optional[str] = None, end: Optional[str] = None, conn=Depends(get_conn)
+):
     return rel.receita_por_dia(conn, start=start, end=end)
 
 
 @app.get("/relatorios/ranking")
-def rel_ranking_produtos(start: Optional[str] = None, end: Optional[str] = None, limit: int = 10, conn=Depends(get_conn)):
+def rel_ranking_produtos(
+    start: Optional[str] = None,
+    end: Optional[str] = None,
+    limit: int = 10,
+    conn=Depends(get_conn),
+):
     return rel.ranking_produtos(conn, start=start, end=end, limit=limit)
 
 
 @app.get("/relatorios/giro")
 def rel_giro(dias: int = 30, conn=Depends(get_conn)):
     return rel.giro_estoque(conn, dias=dias)
-

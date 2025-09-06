@@ -19,8 +19,15 @@ class OrquestradorDeFluxoComercial:
         self.repo_venda = RepositorioVendaSQL(conn)
 
     # Catálogo / Estoque
-    def cadastrar_produto(self, nome: str, descricao: str, quantidade: int, preco: float) -> Produto:
-        produto = Produto(nome=nome, descricao=descricao, quantidade_disponivel=quantidade, preco=preco)
+    def cadastrar_produto(
+        self, nome: str, descricao: str, quantidade: int, preco: float
+    ) -> Produto:
+        produto = Produto(
+            nome=nome,
+            descricao=descricao,
+            quantidade_disponivel=quantidade,
+            preco=preco,
+        )
         with self.conn:
             self.repo_prod.inserir(produto)
         return produto

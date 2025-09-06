@@ -37,4 +37,3 @@ class Venda:
             raise ValueError("Venda deve referenciar um produto válido")
         if self.quantidade <= 0:
             raise ValueError("Quantidade vendida deve ser positiva")
-

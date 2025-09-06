@@ -10,11 +10,11 @@ with f.conectar() as conn:
     svc = OrquestradorDeFluxoComercial(conn)
     prods = svc.listar_produtos()
     if not prods:
-        p = svc.cadastrar_produto('CI Produto', 'Smoke', 3, 10.0)
+        p = svc.cadastrar_produto("CI Produto", "Smoke", 3, 10.0)
         svc.registrar_venda(p.id, 1)
     receita = rel.receita_total(conn)
     assert receita >= 10.0
 
 c = TestClient(app)
-assert c.get('/produtos').status_code == 200
-print('ruff+black ok; smoke ok')
+assert c.get("/produtos").status_code == 200
+print("ruff+black ok; smoke ok")

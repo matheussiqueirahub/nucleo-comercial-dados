@@ -1,9 +1,8 @@
 from __future__ import annotations
 
 import sqlite3
-from dataclasses import asdict
 from datetime import datetime
-from typing import Iterable, List, Optional
+from typing import List, Optional
 
 from domain.modelos import Produto, Venda
 
@@ -107,7 +106,13 @@ class RepositorioVendaSQL:
         # Persistimos datas como ISO 8601 para compatibilidade
         dt = venda.data_venda.isoformat()
         cur = self.conn.execute(
-            q, (int(venda.produto_id), int(venda.quantidade), dt, None if preco_unitario is None else float(preco_unitario))
+            q,
+            (
+                int(venda.produto_id),
+                int(venda.quantidade),
+                dt,
+                None if preco_unitario is None else float(preco_unitario),
+            ),
         )
         venda.id = int(cur.lastrowid)
         return venda

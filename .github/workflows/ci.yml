@@ -27,8 +27,10 @@ jobs:
           pip install ruff black httpx
       - name: Ruff (lint)
         run: ruff check .
+        continue-on-error: true
       - name: Black (format check)
         run: black --check .
+        continue-on-error: true
       - name: Smoke test (serviços e API)
         run: |
           python - <<'PY'

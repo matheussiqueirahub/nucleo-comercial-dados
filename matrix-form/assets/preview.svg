@@ -1,0 +1,69 @@
+<svg width="1280" height="640" viewBox="0 0 1280 640" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Prévia do formulário com tema Matrix">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0e2a18"/>
+      <stop offset="100%" stop-color="#0a0f0a"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <style>
+      .bg { fill: url(#g); }
+      .title { font: 700 56px 'Share Tech Mono', monospace; fill: #00ff41; filter: url(#glow); }
+      .subtitle { font: 400 22px Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; fill: #bdeecb; }
+      .panel { fill: #0e1411; stroke: rgba(0,255,65,0.35); stroke-width: 1.5; rx: 16; }
+      .label { font: 600 16px Inter, system-ui; fill: #d8ffe0; }
+      .input { fill: #09140d; stroke: rgba(0,255,65,0.35); stroke-width: 1; rx: 10; }
+      .btn { fill: #00ff41; }
+      .rain { font: 700 16px 'Share Tech Mono', monospace; fill: rgba(0,255,65,0.28); }
+    </style>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1280" height="640"/>
+
+  <!-- Code rain (estático) -->
+  <g opacity="0.85">
+    <text class="rain" x="40" y="80">0101010101010101010101010101</text>
+    <text class="rain" x="80" y="140">1010010110010100101011001010</text>
+    <text class="rain" x="120" y="200">0101100101010011010101010010</text>
+    <text class="rain" x="160" y="260">1001010101100101010010101010</text>
+    <text class="rain" x="200" y="320">0101010100101100101010100110</text>
+    <text class="rain" x="240" y="380">1010100101011001010100101010</text>
+    <text class="rain" x="280" y="440">0101011001010010101100101010</text>
+    <text class="rain" x="320" y="500">1010100101010010101010010101</text>
+  </g>
+
+  <text class="title" x="60" y="130">Matrix — Formulário Semântico</text>
+  <text class="subtitle" x="60" y="170">HTML acessível + animação "code rain" e UX moderna</text>
+
+  <!-- Mock do formulário -->
+  <rect class="panel" x="60" y="210" width="1160" height="340"/>
+
+  <text class="label" x="90" y="260">Nome completo</text>
+  <rect class="input" x="90" y="270" width="480" height="38"/>
+
+  <text class="label" x="610" y="260">E‑mail</text>
+  <rect class="input" x="610" y="270" width="300" height="38"/>
+
+  <text class="label" x="940" y="260">País</text>
+  <rect class="input" x="940" y="270" width="250" height="38"/>
+
+  <text class="label" x="90" y="332">Senha</text>
+  <rect class="input" x="90" y="342" width="300" height="38"/>
+
+  <text class="label" x="410" y="332">Mensagem</text>
+  <rect class="input" x="410" y="342" width="780" height="100"/>
+
+  <rect class="btn" x="90" y="470" width="220" height="44" rx="12"/>
+  <text x="120" y="499" font-family="Inter" font-size="18" font-weight="700" fill="#001b0a">Entrar na Resistência</text>
+
+  <rect x="320" y="470" width="120" height="44" rx="12" fill="transparent" stroke="rgba(0,255,65,0.35)"/>
+  <text x="355" y="499" font-family="Inter" font-size="18" font-weight="700" fill="#d8ffe0">Limpar</text>
+
+  <text class="subtitle" x="60" y="585">Portfólio • Semântica • Acessibilidade • Detalhes que contam</text>
+</svg>
+

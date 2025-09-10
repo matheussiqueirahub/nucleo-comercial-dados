@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#00ff41" />
+    <title>Matrix | Formulário Semântico</title>
+    <meta name="description" content="Formulário de cadastro acessível e semântico, com visual inspirado em Matrix, ideal para portfolio." />
+    <meta property="og:title" content="Matrix | Formulário Semântico" />
+    <meta property="og:description" content="Formulário de cadastro acessível e semântico, com visual Matrix e animação de code rain." />
+    <meta property="og:type" content="website" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+
+    <canvas id="matrix-rain" aria-hidden="true"></canvas>
+
+    <header class="site-header" role="banner">
+      <nav aria-label="Primária" class="nav">
+        <a href="#sobre">Sobre</a>
+        <a href="#cadastro">Cadastro</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <div class="hero">
+        <h1>Bem‑vindo à Matrix</h1>
+        <p>Um formulário semântico e acessível — escolha entrar na Resistência.</p>
+      </div>
+    </header>
+
+    <main id="conteudo" class="container" role="main">
+      <section id="sobre" aria-labelledby="titulo-sobre" class="sobre">
+        <h2 id="titulo-sobre">O desafio</h2>
+        <p>
+          Página HTML com formulário de cadastro simples, utilizando <strong>elementos semânticos</strong>
+          e boas práticas de <strong>acessibilidade</strong>. Visual inspirado no filme Matrix, com animação de <em>code rain</em> ao fundo.
+        </p>
+      </section>
+
+      <section id="cadastro" aria-labelledby="titulo-cadastro" class="cadastro">
+        <h2 id="titulo-cadastro">Cadastre‑se na Resistência</h2>
+        <p class="lead">Preencha seus dados para receber o contato do operador. Todos os campos marcados com * são obrigatórios.</p>
+
+        <form id="form-recrutamento" action="#" method="post" novalidate>
+          <fieldset>
+            <legend>Dados pessoais</legend>
+            <div class="grid">
+              <div class="field">
+                <label for="nome">Nome completo *</label>
+                <input
+                  type="text"
+                  id="nome"
+                  name="nome"
+                  inputmode="text"
+                  autocomplete="name"
+                  placeholder="Thomas Anderson"
+                  required
+                  pattern=".{2,}"
+                  title="Use pelo menos 2 caracteres."
+                />
+              </div>
+
+              <div class="field">
+                <label for="email">E‑mail *</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  autocomplete="email"
+                  placeholder="neo@zion.org"
+                  required
+                />
+              </div>
+
+              <div class="field">
+                <label for="senha">Senha *</label>
+                <input
+                  type="password"
+                  id="senha"
+                  name="senha"
+                  minlength="6"
+                  autocomplete="new-password"
+                  aria-describedby="hint-senha"
+                  placeholder="Mínimo de 6 caracteres"
+                  required
+                />
+                <small id="hint-senha" class="hint">Dica: use uma frase curta que só você lembraria.</small>
+              </div>
+
+              <div class="field">
+                <label for="pais">País *</label>
+                <select id="pais" name="pais" required>
+                  <option value="" selected disabled>Selecione…</option>
+                  <option value="BR">Brasil</option>
+                  <option value="PT">Portugal</option>
+                  <option value="US">Estados Unidos</option>
+                  <option value="CA">Canadá</option>
+                  <option value="JP">Japão</option>
+                  <option value="DE">Alemanha</option>
+                  <option value="GB">Reino Unido</option>
+                  <option value="AU">Austrália</option>
+                  <option value="AR">Argentina</option>
+                  <option value="ES">Espanha</option>
+                </select>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Mensagem para o operador</legend>
+            <div class="field">
+              <label for="mensagem">Mensagem</label>
+              <textarea
+                id="mensagem"
+                name="mensagem"
+                rows="5"
+                maxlength="500"
+                placeholder="Conte, em poucas linhas, por que você está pronto para sair da Matrix."
+              ></textarea>
+              <div class="meta">
+                <span class="char-count" aria-live="polite"><span id="count">0</span>/500</span>
+              </div>
+            </div>
+          </fieldset>
+
+          <div class="actions">
+            <button type="submit" class="primary">Entrar na Resistência</button>
+            <button type="reset" class="ghost">Limpar</button>
+          </div>
+
+          <p class="terms">Ao enviar, você concorda com os termos da Resistência. Sem spam. Sem Oráculos envolvidos.</p>
+
+          <output id="feedback" class="feedback" role="status" aria-live="polite"></output>
+        </form>
+      </section>
+
+      <aside class="aside" aria-label="Dica de acessibilidade">
+        <p>
+          Dica: se preferir menos movimento, ative a configuração do sistema 
+          “reduzir animações”. Respeitamos <code>prefers-reduced-motion</code> e suavizamos o <em>code rain</em>.
+        </p>
+      </aside>
+
+      <section id="faq" aria-labelledby="titulo-faq" class="faq">
+        <h2 id="titulo-faq">FAQ</h2>
+        <details>
+          <summary>Este formulário envia dados reais?</summary>
+          <p>Não. Ele demonstra boas práticas de HTML semântico e validações no cliente — perfeito para portfolio.</p>
+        </details>
+        <details>
+          <summary>Posso publicar no GitHub Pages?</summary>
+          <p>Sim! Basta subir este projeto para um repositório e habilitar o Pages apontando para a branch principal.</p>
+        </details>
+      </section>
+    </main>
+
+    <footer class="site-footer" role="contentinfo">
+      <p>© <span id="year"></span> — Projeto de estudo com carinho pela web aberta.</p>
+    </footer>
+
+    <noscript>
+      <div class="noscript">Ative o JavaScript para ver a animação e mensagens de feedback.</div>
+    </noscript>
+
+    <script src="./script.js" defer></script>
+  </body>
+  </html>

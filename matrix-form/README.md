@@ -71,7 +71,7 @@ Adicione estes tópicos no repositório para melhorar a descoberta:
 Se preferir via GitHub CLI (após `gh auth login`):
 
 ```bash
-gh repo edit matheussiqueirahub/elementos-html-semantico-e-formulario \
+gh repo edit matheussiqueirahub/nucleo-comercial-dados \
   --add-topic html --add-topic css --add-topic javascript \
   --add-topic semantic-html --add-topic accessibility --add-topic a11y \
   --add-topic forms --add-topic github-pages --add-topic portfolio \

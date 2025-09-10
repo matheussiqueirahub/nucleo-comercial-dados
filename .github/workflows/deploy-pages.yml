@@ -1,4 +1,4 @@
-name: Deploy Matrix Form to GitHub Pages
+name: Deploy to GitHub Pages
 
 on:
   push:
@@ -27,12 +27,12 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
-      - name: Upload site artifact
+      - name: Upload site artifact (matrix-form)
         uses: actions/upload-pages-artifact@v3
         with:
+          # Publica somente a pasta do projeto Matrix Form
           path: matrix-form
 
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-

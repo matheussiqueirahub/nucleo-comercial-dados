@@ -15,8 +15,8 @@ class RepositorioProdutoSQL:
 
     def inserir(self, produto: Produto) -> Produto:
         q = (
-            "INSERT INTO produtos (nome, descricao, quantidade_disponivel, preco) "
-            "VALUES (?, ?, ?, ?)"
+            "INSERT INTO produtos (nome, descricao, quantidade_disponivel, preco, ativo) "
+            "VALUES (?, ?, ?, ?, ?)"
         )
         cur = self.conn.execute(
             q,
@@ -25,6 +25,7 @@ class RepositorioProdutoSQL:
                 produto.descricao or "",
                 int(produto.quantidade_disponivel),
                 float(produto.preco),
+                1 if produto.ativo else 0,
             ),
         )
         produto.id = int(cur.lastrowid)
@@ -34,7 +35,7 @@ class RepositorioProdutoSQL:
         if produto.id is None:
             raise ValueError("Produto sem ID para atualização")
         q = (
-            "UPDATE produtos SET nome=?, descricao=?, quantidade_disponivel=?, preco=? "
+            "UPDATE produtos SET nome=?, descricao=?, quantidade_disponivel=?, preco=?, ativo=? "
             "WHERE id=?"
         )
         self.conn.execute(
@@ -44,12 +45,20 @@ class RepositorioProdutoSQL:
                 produto.descricao or "",
                 int(produto.quantidade_disponivel),
                 float(produto.preco),
+                1 if produto.ativo else 0,
                 int(produto.id),
             ),
         )
 
-    def obter_por_id(self, produto_id: int) -> Optional[Produto]:
-        q = "SELECT id, nome, descricao, quantidade_disponivel, preco FROM produtos WHERE id=?"
+    def obter_por_id(
+        self, produto_id: int, *, include_inativos: bool = False
+    ) -> Optional[Produto]:
+        q = (
+            "SELECT id, nome, descricao, quantidade_disponivel, preco, ativo "
+            "FROM produtos WHERE id=?"
+        )
+        if not include_inativos:
+            q += " AND ativo=1"
         row = self.conn.execute(q, (int(produto_id),)).fetchone()
         if not row:
             return None
@@ -59,13 +68,17 @@ class RepositorioProdutoSQL:
             descricao=row["descricao"],
             quantidade_disponivel=int(row["quantidade_disponivel"]),
             preco=float(row["preco"]),
+            ativo=bool(row["ativo"]),
         )
 
-    def listar(self) -> List[Produto]:
+    def listar(self, *, include_inativos: bool = False) -> List[Produto]:
         q = (
-            "SELECT id, nome, descricao, quantidade_disponivel, preco "
-            "FROM produtos ORDER BY nome ASC"
+            "SELECT id, nome, descricao, quantidade_disponivel, preco, ativo "
+            "FROM produtos"
         )
+        if not include_inativos:
+            q += " WHERE ativo=1"
+        q += " ORDER BY nome ASC"
         cur = self.conn.execute(q)
         return [
             Produto(
@@ -74,22 +87,57 @@ class RepositorioProdutoSQL:
                 descricao=r["descricao"],
                 quantidade_disponivel=int(r["quantidade_disponivel"]),
                 preco=float(r["preco"]),
+                ativo=bool(r["ativo"]),
             )
             for r in cur.fetchall()
         ]
 
     def ajustar_estoque(self, produto_id: int, delta: int) -> None:
-        # Garante que não fique negativo
-        atual = self.obter_por_id(produto_id)
-        if not atual:
-            raise ValueError("Produto inexistente")
-        nova_qtd = atual.quantidade_disponivel + int(delta)
-        if nova_qtd < 0:
-            raise ValueError("Estoque insuficiente para a operação")
-        self.conn.execute(
-            "UPDATE produtos SET quantidade_disponivel=? WHERE id=?",
-            (nova_qtd, int(produto_id)),
+        delta = int(delta)
+        cur = self.conn.execute(
+            """
+            UPDATE produtos
+            SET quantidade_disponivel = quantidade_disponivel + ?
+            WHERE id=? AND ativo=1 AND quantidade_disponivel + ? >= 0
+            """,
+            (delta, int(produto_id), delta),
         )
+        if cur.rowcount == 0:
+            existente = self.obter_por_id(produto_id, include_inativos=True)
+            if not existente:
+                raise ValueError("Produto inexistente")
+            if not existente.ativo:
+                raise ValueError("Produto inativo")
+            raise ValueError("Estoque insuficiente para a operação")
+
+    def buscar_por_nome(self, termo: str) -> List[Produto]:
+        q = """
+            SELECT id, nome, descricao, quantidade_disponivel, preco, ativo
+            FROM produtos
+            WHERE ativo=1 AND nome LIKE ?
+            ORDER BY nome ASC
+        """
+        cur = self.conn.execute(q, (f"%{termo.strip()}%",))
+        return [
+            Produto(
+                id=int(r["id"]),
+                nome=r["nome"],
+                descricao=r["descricao"],
+                quantidade_disponivel=int(r["quantidade_disponivel"]),
+                preco=float(r["preco"]),
+                ativo=bool(r["ativo"]),
+            )
+            for r in cur.fetchall()
+        ]
+
+    def inativar(self, produto_id: int) -> None:
+        cur = self.conn.execute(
+            "UPDATE produtos SET ativo=0 WHERE id=? AND ativo=1", (int(produto_id),)
+        )
+        if cur.rowcount == 0:
+            existente = self.obter_por_id(produto_id, include_inativos=True)
+            if not existente:
+                raise ValueError("Produto inexistente")
 
 
 class RepositorioVendaSQL:

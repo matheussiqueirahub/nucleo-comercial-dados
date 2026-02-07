@@ -127,3 +127,28 @@ def giro_estoque(conn: sqlite3.Connection, *, dias: int = 30) -> List[Dict[str, 
             }
         )
     return resultado
+
+
+def estoque_baixo(
+    conn: sqlite3.Connection, *, limite: int = 5
+) -> List[Dict[str, Any]]:
+    q = """
+        SELECT id AS produto_id,
+               nome,
+               descricao,
+               quantidade_disponivel,
+               preco
+        FROM produtos
+        WHERE ativo=1 AND quantidade_disponivel <= ?
+        ORDER BY quantidade_disponivel ASC, nome ASC
+    """
+    return [
+        {
+            "produto_id": int(r["produto_id"]),
+            "nome": r["nome"],
+            "descricao": r["descricao"],
+            "quantidade_disponivel": int(r["quantidade_disponivel"]),
+            "preco": float(r["preco"]),
+        }
+        for r in conn.execute(q, (int(limite),)).fetchall()
+    ]

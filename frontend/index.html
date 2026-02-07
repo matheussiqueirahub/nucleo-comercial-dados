@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Núcleo Comercial de Dados</title>
+    <meta
+      name="description"
+      content="Painel comercial para gestão de produtos, vendas e indicadores."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar" aria-label="Navegação principal">
+        <div class="brand">
+          <span class="brand__logo" aria-hidden="true">◎</span>
+          <div>
+            <p class="brand__name">Núcleo Comercial</p>
+            <p class="brand__tag">Gestão inteligente</p>
+          </div>
+        </div>
+        <nav class="nav">
+          <a class="nav__link active" href="#dashboard">Dashboard</a>
+          <a class="nav__link" href="#produtos">Produtos</a>
+          <a class="nav__link" href="#vendas">Vendas</a>
+          <a class="nav__link" href="#relatorios">Relatórios</a>
+        </nav>
+        <div class="sidebar__footer">
+          <p>API integrada via FastAPI</p>
+        </div>
+      </aside>
+
+      <main class="main">
+        <header class="header" id="dashboard">
+          <div>
+            <p class="eyebrow">Painel Comercial</p>
+            <h1>Visão centralizada de produtos e vendas</h1>
+            <p class="subtitle">
+              Acompanhe estoque, receita e performance em tempo real.
+            </p>
+          </div>
+          <div class="header__actions">
+            <button class="btn btn--ghost" id="refresh">Atualizar dados</button>
+            <button class="btn btn--primary" id="toggle-theme">
+              Alternar tema
+            </button>
+          </div>
+        </header>
+
+        <section class="stats" aria-label="Indicadores principais">
+          <article class="card stat">
+            <p class="stat__label">Produtos ativos</p>
+            <p class="stat__value" id="stat-produtos">—</p>
+          </article>
+          <article class="card stat">
+            <p class="stat__label">Receita total</p>
+            <p class="stat__value" id="stat-receita">—</p>
+          </article>
+          <article class="card stat">
+            <p class="stat__label">Vendas registradas</p>
+            <p class="stat__value" id="stat-vendas">—</p>
+          </article>
+          <article class="card stat">
+            <p class="stat__label">Estoque baixo</p>
+            <p class="stat__value" id="stat-baixo">—</p>
+          </article>
+        </section>
+
+        <section class="grid" id="produtos">
+          <div class="card">
+            <div class="card__header">
+              <h2>Produtos</h2>
+              <div class="filters">
+                <label class="input">
+                  <span>Buscar</span>
+                  <input
+                    type="text"
+                    id="busca-produto"
+                    placeholder="Nome do produto"
+                  />
+                </label>
+              </div>
+            </div>
+            <div class="table" role="table" aria-label="Lista de produtos">
+              <div class="table__row table__head" role="row">
+                <span>Produto</span>
+                <span>Estoque</span>
+                <span>Preço</span>
+                <span>Status</span>
+              </div>
+              <div id="lista-produtos" class="table__body"></div>
+            </div>
+          </div>
+
+          <div class="card card--form">
+            <h2>Cadastro rápido</h2>
+            <form id="form-produto">
+              <label class="input">
+                <span>Nome</span>
+                <input type="text" name="nome" required />
+              </label>
+              <label class="input">
+                <span>Descrição</span>
+                <input type="text" name="descricao" />
+              </label>
+              <label class="input">
+                <span>Quantidade</span>
+                <input type="number" name="quantidade" min="0" value="0" />
+              </label>
+              <label class="input">
+                <span>Preço (R$)</span>
+                <input
+                  type="number"
+                  name="preco"
+                  min="0"
+                  step="0.01"
+                  required
+                />
+              </label>
+              <button class="btn btn--primary" type="submit">
+                Salvar produto
+              </button>
+            </form>
+          </div>
+        </section>
+
+        <section class="grid" id="vendas">
+          <div class="card">
+            <h2>Registrar venda</h2>
+            <form id="form-venda" class="stack">
+              <label class="input">
+                <span>ID do produto</span>
+                <input type="number" name="produto_id" min="1" required />
+              </label>
+              <label class="input">
+                <span>Quantidade</span>
+                <input type="number" name="quantidade" min="1" required />
+              </label>
+              <button class="btn btn--primary" type="submit">
+                Registrar venda
+              </button>
+            </form>
+
+            <div class="divider"></div>
+
+            <h3>Últimas vendas</h3>
+            <div class="table" role="table" aria-label="Lista de vendas">
+              <div class="table__row table__head" role="row">
+                <span>ID</span>
+                <span>Produto</span>
+                <span>Quantidade</span>
+                <span>Data</span>
+              </div>
+              <div id="lista-vendas" class="table__body"></div>
+            </div>
+          </div>
+
+          <div class="card card--form">
+            <h2>Ajuste de estoque</h2>
+            <form id="form-estoque" class="stack">
+              <label class="input">
+                <span>ID do produto</span>
+                <input type="number" name="produto_id" min="1" required />
+              </label>
+              <label class="input">
+                <span>Delta</span>
+                <input type="number" name="delta" required />
+              </label>
+              <button class="btn btn--secondary" type="submit">
+                Aplicar ajuste
+              </button>
+            </form>
+
+            <div class="divider"></div>
+
+            <h2>Atualizar produto</h2>
+            <form id="form-atualizar" class="stack">
+              <label class="input">
+                <span>ID do produto</span>
+                <input type="number" name="produto_id" min="1" required />
+              </label>
+              <label class="input">
+                <span>Novo nome</span>
+                <input type="text" name="nome" />
+              </label>
+              <label class="input">
+                <span>Nova descrição</span>
+                <input type="text" name="descricao" />
+              </label>
+              <label class="input">
+                <span>Novo estoque</span>
+                <input type="number" name="quantidade" min="0" />
+              </label>
+              <label class="input">
+                <span>Novo preço (R$)</span>
+                <input type="number" name="preco" min="0" step="0.01" />
+              </label>
+              <button class="btn btn--ghost" type="submit">
+                Atualizar cadastro
+              </button>
+            </form>
+          </div>
+        </section>
+
+        <section class="grid" id="relatorios">
+          <div class="card">
+            <h2>Relatórios rápidos</h2>
+            <div class="chips">
+              <button class="chip" data-report="receita">Receita total</button>
+              <button class="chip" data-report="ranking">Ranking</button>
+              <button class="chip" data-report="giro">Giro de estoque</button>
+              <button class="chip" data-report="baixo">Estoque baixo</button>
+            </div>
+            <div id="relatorio-output" class="report"></div>
+          </div>
+
+          <div class="card">
+            <h2>Produtos críticos</h2>
+            <p class="muted">
+              Monitore itens com estoque baixo para evitar ruptura.
+            </p>
+            <div id="lista-baixo" class="stack"></div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>

@@ -1,89 +1,72 @@
-# Sistema Comercial – Persistência de Produtos e Vendas
+# Núcleo Comercial de Dados — Frontend & API
 
-Este projeto implementa a persistência de dados para Produtos e Vendas usando SQLite, com uma arquitetura simples baseada em POO, Repositórios e Serviços de Negócio. Os nomes foram escolhidos para refletir boas práticas da área de dados.
+O Núcleo Comercial de Dados oferece uma experiência web moderna para gestão de produtos, vendas e indicadores comerciais. O frontend entrega um painel responsivo, com acessibilidade e fluxo orientado a operação, enquanto a API em FastAPI mantém regras de negócio consistentes.
 
-- Banco: SQLite (arquivo local `data/mercado.sqlite3`)
-- Tabelas mínimas: `produtos`, `vendas`
-- Extras: controle transacional simples e validações de estoque
+## Visão geral do frontend
+A interface web foi desenhada para equipes que precisam acompanhar estoque, receita e performance em um único painel. O fluxo prioriza leitura rápida, ações de cadastro e relatórios críticos.
 
-## Requisitos
+**Público-alvo**
+- Times comerciais e operações de pequenas empresas.
+- Projetos educacionais que precisam de um painel completo para dados de vendas.
 
-- Python 3.9+
-- Sem dependências externas (usa apenas a biblioteca padrão)
+## Stack e tecnologias
+- HTML, CSS e JavaScript moderno (frontend estático)
+- FastAPI (API HTTP)
+- SQLite (persistência local)
 
-## Como executar
+## Funcionalidades principais
+- Dashboard com métricas de receita, vendas e estoque.
+- Cadastro rápido, atualização e ajuste de produtos.
+- Registro de vendas e histórico recente.
+- Relatórios analíticos (ranking, giro, estoque baixo).
+- Alternância de tema claro/escuro.
 
-1. Execute o CLI:
-
+## Estrutura do projeto
 ```
-python main.py
-```
-
-2. Opções disponíveis (menu interativo):
-- Cadastrar produto
-- Listar produtos
-- Registrar venda
-- Listar vendas
-- Sair
-
-O banco e o esquema são criados automaticamente no primeiro uso.
-
-## Estrutura
-
-- `infra/forja_persistencia.py`: conexão e DDL (criação de tabelas)
-- `domain/modelos.py`: classes de domínio (`Produto`, `Venda`)
-- `infra/repositorios.py`: repositórios SQL (Produto/Venda)
-- `services/servicos.py`: regras de negócio (estoque e vendas)
-- `main.py`: CLI de demonstração
-
-## Observações de projeto
-
-- Camada de persistência isolada: `RepositorioProdutoSQL` e `RepositorioVendaSQL` usam consultas parametrizadas para evitar SQL injection.
-- Transações: operações de venda usam uma única transação para garantir consistência entre baixa de estoque e registro de venda.
-- Índices: índices criados para acelerar pesquisas por nome de produto e data de venda.
-- Tipos e validações: uso de `dataclasses` e validações de domínio nas entidades e serviços.
-
-## API HTTP (FastAPI)
-
-Opcionalmente, você pode expor uma API:
-
-1. Instale dependências:
-
-```
-pip install fastapi uvicorn
+frontend/            # Interface web estática
+api/                 # API HTTP (FastAPI)
+domain/              # Entidades de domínio
+infra/               # Persistência, schema e repositórios
+services/            # Regras de negócio e relatórios
+tests/               # Testes automatizados
+main.py              # CLI principal
 ```
 
-2. Rode o servidor:
+## Setup e execução
 
+### 1) Ambiente
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
 ```
+
+### 2) Executar a aplicação web
+```bash
 uvicorn api.main:app --reload
 ```
 
-3. Explore a documentação interativa em:
-- Swagger UI: http://127.0.0.1:8000/docs
-- Redoc: http://127.0.0.1:8000/redoc
+Abra a UI em: http://127.0.0.1:8000/
+
+### 3) Executar a CLI (opcional)
+```bash
+python main.py
+```
+
+## Boas práticas adotadas
+- Design responsivo com tokens e hierarquia visual consistente.
+- Acessibilidade com labels, contraste e foco em legibilidade.
+- Separação clara entre UI, domínio e persistência.
+- Transações atômicas para operações de estoque e venda.
+
+## Melhorias futuras
+- Autenticação e perfis de usuário.
+- Exportação de relatórios em CSV/Excel.
+- Dashboard com gráficos e filtros avançados.
+- Cache para relatórios de alta demanda.
 
 ## Status do CI
-
 [![CI](https://github.com/matheussiqueirahub/nucleo-comercial-dados/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/matheussiqueirahub/nucleo-comercial-dados/actions/workflows/ci.yml)
 
-## Changelog
-
-Veja o histórico em `CHANGELOG.md` ou em Releases: https://github.com/matheussiqueirahub/nucleo-comercial-dados/releases/latest
-
-### Endpoints principais
-- `GET /produtos` | `POST /produtos`
-- `GET /vendas` | `POST /vendas`
-- `GET /relatorios/receita?start=&end=`
-- `GET /relatorios/receita_por_dia?start=&end=`
-- `GET /relatorios/ranking?start=&end=&limit=`
-- `GET /relatorios/giro?dias=30`
-
-Observação: as datas `start/end` aceitam formatos ISO como `2025-01-01`.
-
-## Relatórios inclusos
-
-- Receita total com intervalo opcional (usa preço no momento da venda)
-- Receita agregada por dia (série temporal)
-- Ranking de produtos por receita e volume
-- Giro de estoque: média diária vendida (N dias) e cobertura em dias
+Autoria: Matheus Siqueira  
+Website: https://www.matheussiqueira.dev/

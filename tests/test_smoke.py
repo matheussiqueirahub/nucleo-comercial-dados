@@ -1,9 +1,9 @@
-from infra.forja_persistencia import ForjaDePersistencia
-from services.servicos import OrquestradorDeFluxoComercial
-from services import relatorios as rel
+import pytest
+
 from api.main import app
-from fastapi.testclient import TestClient
-import os
+from infra.forja_persistencia import ForjaDePersistencia
+from services import relatorios as rel
+from services.servicos import OrquestradorDeFluxoComercial
 
 def test_smoke_flow():
     # Banco local (cria data/) - garantir que diretório data existe se necessario
@@ -24,6 +24,9 @@ def test_smoke_flow():
         conn.close()
 
 def test_api_status():
+    pytest.importorskip("httpx")
+    from fastapi.testclient import TestClient
+
     c = TestClient(app)
     r = c.get('/produtos')
     assert r.status_code == 200, r.text

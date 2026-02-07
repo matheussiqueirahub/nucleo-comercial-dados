@@ -12,6 +12,7 @@ class Produto:
     descricao: str = ""
     quantidade_disponivel: int = 0
     preco: float = 0.0
+    ativo: bool = True
     id: int | None = field(default=None, compare=False)
 
     def __post_init__(self) -> None:
@@ -21,6 +22,8 @@ class Produto:
             raise ValueError("Quantidade disponível não pode ser negativa")
         if self.preco < 0:
             raise ValueError("Preço não pode ser negativo")
+        if not isinstance(self.ativo, bool):
+            raise ValueError("Status de ativo deve ser booleano")
 
 
 @dataclass

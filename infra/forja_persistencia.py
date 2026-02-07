@@ -34,7 +34,8 @@ class ForjaDePersistencia:
                 nome TEXT NOT NULL,
                 descricao TEXT DEFAULT '',
                 quantidade_disponivel INTEGER NOT NULL CHECK (quantidade_disponivel >= 0),
-                preco REAL NOT NULL CHECK (preco >= 0)
+                preco REAL NOT NULL CHECK (preco >= 0),
+                ativo INTEGER NOT NULL DEFAULT 1 CHECK (ativo IN (0, 1))
             );
             """
 
@@ -50,6 +51,7 @@ class ForjaDePersistencia:
 
             idx = [
                 "CREATE INDEX IF NOT EXISTS idx_produtos_nome ON produtos(nome);",
+                "CREATE INDEX IF NOT EXISTS idx_produtos_ativo ON produtos(ativo);",
                 "CREATE INDEX IF NOT EXISTS idx_vendas_data ON vendas(data_venda);",
                 "CREATE INDEX IF NOT EXISTS idx_vendas_produto ON vendas(produto_id);",
             ]
@@ -64,5 +66,14 @@ class ForjaDePersistencia:
                 nomes = {c[1] for c in cols}
                 if "preco_unitario" not in nomes:
                     conn.execute("ALTER TABLE vendas ADD COLUMN preco_unitario REAL;")
+                cols_prod = conn.execute("PRAGMA table_info('produtos');").fetchall()
+                nomes_prod = {c[1] for c in cols_prod}
+                if "ativo" not in nomes_prod:
+                    conn.execute(
+                        "ALTER TABLE produtos ADD COLUMN ativo INTEGER NOT NULL DEFAULT 1;"
+                    )
+                conn.execute(
+                    "UPDATE produtos SET ativo = 1 WHERE ativo IS NULL OR ativo NOT IN (0, 1);"
+                )
         finally:
             conn.close()
